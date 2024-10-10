@@ -1,5 +1,6 @@
 package org.innolab.batchdemo.process;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -14,6 +15,7 @@ import java.util.zip.ZipOutputStream;
 
 @Component
 @StepScope
+@Slf4j
 public class ZipFileTasklet implements Tasklet {
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
@@ -33,6 +35,8 @@ public class ZipFileTasklet implements Tasklet {
                 zipOut.write(bytes, 0, length);
             }
         }
+
+        log.info("Zip file generated {}", zipFile);
         return RepeatStatus.FINISHED;
     }
 }

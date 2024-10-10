@@ -2,6 +2,9 @@ package org.innolab.batchdemo.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.innolab.batchdemo.listener.ChunkNumberListener;
+import org.innolab.batchdemo.listener.LogJobExecutionListener;
+import org.innolab.batchdemo.listener.LogStepExecutionListener;
 import org.innolab.batchdemo.model.Book;
 import org.innolab.batchdemo.process.BookLineAggregator;
 import org.innolab.batchdemo.repository.BookRepository;
@@ -57,6 +60,8 @@ public class BatchConfig {
     public Step jsonStep() {
         return new StepBuilder("jsonStep", jobRepository)
                 .<Book, Book>chunk(10, transactionManager)
+                .listener(new ChunkNumberListener())
+                .listener(new LogStepExecutionListener())
                 .reader(reader())
                 .writer(writer())
                 .build();
@@ -74,6 +79,7 @@ public class BatchConfig {
         return new JobBuilder("exportBookJob", jobRepository)
                 .start(jsonStep())
                 .next(zipStep())
+                .listener(new LogJobExecutionListener())
                 .build();
     }
 }

@@ -2,26 +2,51 @@ spring:
   application:
     name: data-rest-api
   datasource:
-    driver-class-name: org.postgresql.Driver
+    driver-class-name: org.h2.Driver
     hikari:
-      jdbc-url: jdbc:postgresql://localhost:5432/bookdb
-      username: user
-      password: password
+      jdbc-url: jdbc:h2:mem:library;DB_CLOSE_DELAY=-1
+      username: sa
+      password:
       connection-timeout: 10000
       idle-timeout: 600000
       max-lifetime: 18000000
       minimum-idle: 2
       maximum-pool-size: 60
-    url: jdbc:postgresql://localhost:5432/bookdb
   jpa:
     show-sql: true
-    database: postgresql
+    database: h2
     generate-ddl: true
     hibernate:
       ddl-auto: create-drop
     properties:
       hibernate:
-        dialect: 'org.hibernate.dialect.PostgreSQLDialect'
+        dialect: 'org.hibernate.dialect.H2Dialect'
   batch:
     jdbc:
       initialize-schema: always
+---
+datasource:
+  driver-class-name: org.postgresql.Driver
+  hikari:
+    jdbc-url: jdbc:postgresql://localhost:5432/bookdb
+    username: user
+    password: password
+    connection-timeout: 10000
+    idle-timeout: 600000
+    max-lifetime: 18000000
+    minimum-idle: 2
+    maximum-pool-size: 60
+  url: jdbc:postgresql://localhost:5432/bookdb
+jpa:
+  show-sql: true
+  database: postgresql
+  generate-ddl: true
+  hibernate:
+    ddl-auto: create-drop
+  properties:
+    hibernate:
+      dialect: 'org.hibernate.dialect.PostgreSQLDialect'
+spring:
+  config:
+    activate:
+      on-profile: postgresql
